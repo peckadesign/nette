@@ -9,6 +9,8 @@
 #nette-debug {
 	display: none;
 	direction: ltr;
+	position: fixed;
+	z-index: 10;
 }
 
 body#nette-debug {
