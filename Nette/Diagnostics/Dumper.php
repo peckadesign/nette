@@ -44,6 +44,9 @@ class Dumper
 		'curl' => 'curl_getinfo',
 	);
 
+	/** @var array|Nette\Callback[] */
+	private static $classes = array();
+
 
 	/**
 	 * Dumps variable to the output.
@@ -60,6 +63,17 @@ class Dumper
 		}
 		return $var;
 	}
+
+
+	/**
+	 * @param string
+	 * @param callable
+	 */
+	public static function addClassDumper($class, $callback)
+	{
+		self::$classes[strtolower($class)] = Nette\Callback::create($callback);
+	}
+
 
 
 	/**
@@ -212,6 +226,11 @@ class Dumper
 			foreach (clone $var as $obj) {
 				$fields[] = array('object' => $obj, 'data' => $var[$obj]);
 			}
+		} elseif (isset(self::$classes[$lName = strtolower(get_class($var))])) {
+			$fields = self::$classes[$lName]->invoke($var);
+			if (!is_scalar($fields) && !is_array($fields)) {
+				throw new Nette\UnexpectedValueException('Callback ' . self::$classes[$lName] . ' must return scalar or array, ' . gettype($fields) . ' returned.');
+			}
 		} else {
 			$fields = (array) $var;
 		}
@@ -227,6 +246,9 @@ class Dumper
 
 		} elseif (in_array($var, $list, TRUE)) {
 			return $out . " { <i>RECURSION</i> }\n";
+
+		} elseif (!is_array($fields)) {
+			return $out . ' => ' . self::dumpVar($fields, $options, $level + 1);
 
 		} elseif (!$options[self::DEPTH] || $level < $options[self::DEPTH] || $var instanceof \Closure) {
 			$collapsed = $level ? count($fields) >= $options[self::COLLAPSE_COUNT] : $options[self::COLLAPSE];
