@@ -52,7 +52,7 @@ abstract class Control extends PresenterComponent implements IRenderable
 
 	/**
 	 * @param  string|NULL
-	 * @return Nette\Templating\ITemplate
+	 * @return Nette\Templating\ITemplate|Nette\Templating\Template
 	 */
 	protected function createTemplate($class = NULL)
 	{
