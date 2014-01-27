@@ -36,7 +36,7 @@ class FileJournal extends Nette\Object implements IJournal
 	const DATA_MAGIC  = 0x64617461;
 
 	/** Node size in bytes */
-	const NODE_SIZE = 4096;
+	const NODE_SIZE = 16384;
 
 	/** Bit rotation for saving data into nodes. BITROT = log2(NODE_SIZE) */
 	const BITROT = 12;
@@ -781,7 +781,7 @@ class FileJournal extends Nette\Object implements IJournal
 		$isData = $node[self::INFO][self::TYPE] === self::DATA;
 		if ($dataSize > self::NODE_SIZE) {
 			if ($isData) {
-				throw new Nette\InvalidStateException('Saving node is bigger than maximum node size.');
+				throw new Nette\InvalidStateException(sprintf("Saving node is bigger than maximum node size; required %d, node size %d", $dataSize, self::NODE_SIZE));
 			} else {
 				$this->bisectNode($id, $node);
 				return FALSE;
