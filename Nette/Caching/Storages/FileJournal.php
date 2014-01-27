@@ -36,7 +36,7 @@ class FileJournal extends Nette\Object implements IJournal
 	const DATA_MAGIC  = 0x64617461;
 
 	/** Node size in bytes */
-	const NODE_SIZE = 16384;
+	const NODE_SIZE = 32768;
 
 	/** Bit rotation for saving data into nodes. BITROT = log2(NODE_SIZE) */
 	const BITROT = 12;
