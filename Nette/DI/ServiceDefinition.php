@@ -39,7 +39,7 @@ class ServiceDefinition extends Nette\Object
 	public $shared = TRUE;
 
 	/** @var bool */
-	public $inject = FALSE;
+	public $inject = TRUE;
 
 	/** @var string  interface name */
 	public $implement;
