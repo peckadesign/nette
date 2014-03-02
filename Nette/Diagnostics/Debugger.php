@@ -79,6 +79,9 @@ class Debugger
 	/** @var mixed {@link Debugger::tryError()} FALSE means catching is disabled */
 	private static $lastError = FALSE;
 
+	/** @var string path to custom error 500 template invoked by uncaught exception */
+	public static $error500Template = NULL;
+
 	/** @internal */
 	public static $errorTypes = array(
 		E_ERROR => 'Fatal Error',
@@ -433,7 +436,8 @@ class Debugger
 				}
 
 				if (self::isHtmlMode()) {
-					require __DIR__ . '/templates/error.phtml';
+					if (self::$error500Template && file_exists(self::$error500Template)) require self::$error500Template;
+					else require __DIR__ . '/templates/error.phtml';
 
 				} else {
 					echo "ERROR: the server encountered an internal error and was unable to complete your request.\n";
