@@ -77,6 +77,7 @@ class NetteExtension extends Nette\DI\CompilerExtension
 			'scream' => NULL,
 			'bar' => array(), // of class name
 			'blueScreen' => array(), // of callback
+			'error500Template' => NULL,
 		),
 	);
 
@@ -389,7 +390,7 @@ class NetteExtension extends Nette\DI\CompilerExtension
 		$config = $this->getConfig($this->defaults);
 
 		// debugger
-		foreach (array('email', 'editor', 'browser', 'strictMode', 'maxLen', 'maxDepth', 'showLocation', 'scream') as $key) {
+		foreach (array('email', 'editor', 'browser', 'strictMode', 'maxLen', 'maxDepth', 'showLocation', 'scream', 'error500Template') as $key) {
 			if (isset($config['debugger'][$key])) {
 				$initialize->addBody('Nette\Diagnostics\Debugger::$? = ?;', array($key, $config['debugger'][$key]));
 			}
