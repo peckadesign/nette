@@ -242,7 +242,7 @@ class Validators extends Nette\Object
 		$localPart = "(?:\"(?:[ !\\x23-\\x5B\\x5D-\\x7E]*|\\\\[ -~])+\"|$atom+(?:\\.$atom+)*)"; // quoted or unquoted
 		$alpha = "a-z\x80-\xFF"; // superset of IDN
 		$domain = "[0-9$alpha](?:[-0-9$alpha]{0,61}[0-9$alpha])?"; // RFC 1034 one domain component
-		$topDomain = "[$alpha](?:[-0-9$alpha]{0,17}[$alpha])?";
+		$topDomain = "[$alpha](?:[-0-9$alpha]{0,17}[$alpha])";
 		return (bool) preg_match("(^$localPart@(?:$domain\\.)+$topDomain\\z)i", $value);
 	}
 
