@@ -98,7 +98,10 @@ class Cache extends Nette\Object implements \ArrayAccess
 	{
 		$data = $this->storage->read($this->generateKey($key));
 		if ($data === NULL && $fallback) {
-			return $this->save($key, Callback::closure($fallback));
+			//https://github.com/nette/caching/commit/6093d0fc2f647315a38f3a48de32caa997b5c4f7
+			return $this->save($key, function (& $dependencies) use ($fallback) {
+				return call_user_func_array($fallback, array(& $dependencies));
+			});
 		}
 		return $data;
 	}
