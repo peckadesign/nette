@@ -7,8 +7,8 @@
 
 namespace Nette\Diagnostics;
 
-use Nette,
-	ErrorException;
+use ErrorException;
+use Nette;
 
 
 /**
@@ -111,6 +111,9 @@ class Debugger
 
 	/** @var string name of the directory where errors should be logged; FALSE means that logging is disabled */
 	public static $logDirectory;
+
+	/** @var int  log bluescreen in production mode for this error severity */
+	public static $logSeverity = 0;
 
 	/** @var string|array email(s) to which send error notifications */
 	public static $email;
@@ -513,6 +516,13 @@ class Debugger
 
 		} elseif (($severity & error_reporting()) !== $severity) {
 			return FALSE; // calls normal error handler to fill-in error_get_last()
+
+		} elseif (($severity & self::$logSeverity) === $severity) {
+			$e = new ErrorException($message, 0, $severity, $file, $line);
+			$e->context = $context;
+			self::log($e, self::ERROR);
+
+			return NULL;
 
 		} elseif (!self::$productionMode && (is_bool(self::$strictMode) ? self::$strictMode : ((self::$strictMode & $severity) === $severity))) {
 			$e = new ErrorException($message, 0, $severity, $file, $line);
