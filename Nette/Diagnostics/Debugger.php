@@ -343,6 +343,10 @@ class Debugger
 		if ($message instanceof \Exception || $message instanceof \Throwable) {
 			$exception = $message;
 			while ($exception) {
+				$data[] = [
+					$exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine(),
+					array_map(function ($item) { unset($item['args']); return $item; }, $exception->getTrace()),
+				];
 				$tmp[] = ($exception instanceof ErrorException
 					? 'Fatal error: ' . $exception->getMessage()
 					: get_class($exception) . ": " . $exception->getMessage())
@@ -352,7 +356,7 @@ class Debugger
 			$exception = $message;
 			$message = implode($tmp, "\ncaused by ");
 
-			$hash = md5(preg_replace('~(Resource id #)\d+~', '$1', $exception));
+			$hash = substr(md5(serialize($data)), 0, 10);
 			$exceptionFilename = "exception-" . @date('Y-m-d-H-i-s') . "-$hash.html";
 			foreach (new \DirectoryIterator(self::$logDirectory) as $entry) {
 				if (strpos($entry, $hash)) {
